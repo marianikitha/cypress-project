@@ -1,0 +1,173 @@
+/* You can add global styles to this file, and also import other style files */
+
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif;padding: 25px;background-color: #eff3ff; }
+
+@import './variables.scss';
+::-webkit-scrollbar-button {
+    display: none;
+}
+
+* {
+    &::-webkit-scrollbar-thumb {
+        border: 3px solid transparent;
+        border-radius: 10px;
+        background-clip: content-box;
+        background-color: $primary-scroll-bar;
+        -webkit-background-clip: content-box;
+    }
+
+
+    &::-webkit-scrollbar-thumb:hover {
+        background-color: $primary-scroll-bar;
+        border: 0;
+        background-clip: border-box;
+        -webkit-background-clip: border-box;
+    }
+
+
+    &::-webkit-scrollbar {
+        width: 10px;
+        height: 10px;
+        background-color: transparent;
+    }
+}
+
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+// input[type="number"] {
+//     -moz-appearance: textfield;
+// }
+
+// custom scroll styling
+
+.screen-header {
+    font-family: Roboto;
+    font-style: normal;
+    font-weight: 500;
+    font-size: 24px;
+    line-height: 32px;
+}
+
+.screen-nav-item {
+    text-transform: uppercase;
+    font-family: Roboto;
+    font-style: normal;
+    font-weight: 500;
+    font-size: 13px;
+    line-height: 22px;
+    color: $primary-text;
+}
+.chip-small {
+    min-height: 25px !important;
+    font-size: 12px !important;
+}
+
+.chip-red {
+    color: #ff5660 !important;
+    background: rgba(255, 86, 96, 0.1) !important;
+}
+
+.chip-orange {
+    color: #ffae5a !important;
+    background: rgba(255, 174, 90, 0.1) !important;
+}
+
+.chip-primary {
+    color: #263238 !important;
+    background: #eceff1 !important;
+}
+
+.chip-green {
+    // color: #eceff1 !important;
+    // background: $onedpo-accent !important;
+    color: $onedpo-accent !important;
+    background: rgba(15, 178, 105, 0.1) !important;
+}
+
+.chip-blue {
+    // color:  #eceff1 !important;
+    // background: $column-blue-line !important;
+    color: $column-blue-line !important;
+    // background: #eceff1 !important;
+    background: #d5deff !important;
+}
+
+.text-red {
+    color: #ff5660 !important;
+}
+
+.text-orange {
+    color: #ffae5a !important;
+}
+
+.text-primary {
+    color: #263238 !important;
+}
+
+.onedpo-red {
+    color: $onedpo-red;
+}
+
+.onedpo-blue {
+    color: $onedpo-blue
+}
+
+.onedpo-green {
+    color: $onedpo-green
+}
+
+.onedpo-yellow {
+    color: $onedpo-yellow
+}
+
+.onedpo-orange {
+    color: $onedpo-orange
+}
+
+.onedpo-violet {
+    color: $onedpo-violet
+}
+
+.onedpo-grey {
+    color: $onedpo-grey
+}
+
+.onedpo-chip-red {
+    color: $onedpo-red !important;
+    background: $onedpo-gradient-red !important;
+}
+
+.onedpo-chip-blue {
+    color: $onedpo-blue !important;
+    background: $onedpo-gradient-blue !important;
+}
+
+.onedpo-chip-green {
+    color: $onedpo-green !important;
+    background: $onedpo-gradient-green !important;
+}
+
+.onedpo-chip-yellow {
+    color: $onedpo-yellow !important;
+    background: $onedpo-gradient-yellow !important;
+}
+
+.onedpo-chip-orange {
+    color: $onedpo-orange !important;
+    background: $onedpo-gradient-orange !important;
+}
+
+.onedpo-chip-violet {
+    color: $onedpo-violet !important;
+    background: $onedpo-gradient-violet !important;
+}
+
+.onedpo-chip-grey {
+    color: $onedpo-grey !important;
+    background: $onedpo-gradient-grey !important;
+}

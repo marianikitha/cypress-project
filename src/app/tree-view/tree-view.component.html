@@ -1,0 +1,78 @@
+<div fxLayout="column">
+    <div fxLayout="row wrap">
+        <form [formGroup]="searchForm" (ngSubmit)="searchByKeyword(null)" novalidate style="width: 100%">
+            <div fxFlex="auto" fxFlex.xs="100%" fxFlex.gt-xs="100%" fxFlex.sm="69%" fxFlex.gt-sm="69%">
+                <mat-form-field appearance="outline" style="font-size: 14px; width: 100%">
+                    <mat-placeholder>Search reports</mat-placeholder>
+                    <mat-icon matPrefix>search</mat-icon>
+                    <mat-label>Search data</mat-label>
+                    <input matInput type="search" formControlName="keyword" />
+                </mat-form-field>
+            </div>
+
+            <div fxFlex.gt-xs="2%"></div>
+            <div fxFlex="auto" fxFlex.xs="100%" fxFlex.gt-xs="100%" fxFlex.sm="29%" fxFlex.gt-sm="29%">
+                <button mat-button matSuffix mat-stroked-button aria-label="search" color="primary"
+                    style="font-size: 13px; line-height: 33px; width: 100%">
+                    SEARCH
+                </button>
+            </div>
+        </form>
+    </div>
+    <div fxFlex="100%">
+        <mat-tree *ngIf="dataSource.data.length" [dataSource]="dataSource" [treeControl]="treeControl" class="example-tree tree-container-body">
+            <!-- This is the tree node template for leaf nodes -->
+            <!-- There is inline padding applied to this node using styles.
+      This padding value depends on the mat-icon-button width. -->
+
+            <mat-tree-node *matTreeNodeDef="let node; when: isPreviousPageLoadMore">
+                <a class="load-more-search previous-page" (click)="searchByKeyword(node)"> Previous </a>
+            </mat-tree-node>
+
+
+
+            <mat-tree-node *matTreeNodeDef="let node" matTreeNodeToggle (click)="selectedLastNode(node)"
+                [class.selected-data-asset]="dataSourcePath === stringifyData(node.datasourcePath) ? true : null">
+                <div class="horizontal-line"></div>
+                <p class="node-name">{{ node.name }}</p>
+            </mat-tree-node>
+
+            <!-- This is the tree node template for expandable nodes -->
+            <!-- <mat-tree-node *matTreeNodeDef="let node; when: hasChild"> -->
+            <mat-nested-tree-node *matTreeNodeDef="let node; when: hasChild">
+                <div class="mat-tree-node" (click)="loadChildren(node)"
+                    [class.selected-data-asset]="dataSourcePath === stringifyData(node.datasourcePath) ? true : null">
+                    <!-- <button mat-icon-button [attr.aria-label]="'Toggle ' + node.name"> -->
+                    <div class="horizontal-line" *ngIf="node.parent"></div>
+                    <mat-icon matTreeNodeToggle id="circle-icon" class="mat-icon-rtl-mirror" color="primary" size="small"
+                        [attr.aria-label]="'Toggle ' + node.name">
+                        {{ treeControl.isExpanded(node) ? 'remove_circle' : 'add_circle' }}
+                    </mat-icon>
+                    <!-- </button>  -->
+                    <p class="node-name">{{ node.name }}</p>
+                </div>
+                <!-- There is inline padding applied to this div using styles.
+            This padding value depends on the mat-icon-button width.  -->
+                <div [class.example-tree-invisible]="!treeControl.isExpanded(node)" role="group">
+                    <ng-container matTreeNodeOutlet></ng-container>
+                </div>
+            </mat-nested-tree-node>
+            <!-- </mat-tree-node> -->
+            <mat-tree-node *matTreeNodeDef="let node; when: isLoadMore" (click)="loadMore(node)">
+                <a class="load-more" > + </a>
+            </mat-tree-node>
+
+
+            <mat-tree-node *matTreeNodeDef="let node; when: isNextPageLoadMore">
+                <a class="load-more-search next-page" (click)="searchByKeyword(node)"> Next </a>
+            </mat-tree-node>
+
+        </mat-tree>
+        <div *ngIf="!dataSource.data.length">
+            <mat-card class="mat-elevation-z0 retention-card metadata-card-margin">
+                <mat-card-subtitle class="retention-card-header">
+                    No data found</mat-card-subtitle>
+            </mat-card>
+        </div>
+    </div>
+</div>

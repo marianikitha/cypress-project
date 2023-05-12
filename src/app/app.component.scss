@@ -1,0 +1,73 @@
+@import '../variables.scss';
+
+.html {   background-color: black; }
+
+.screen-title {
+    margin-bottom: 20px;
+}
+
+.search-button {
+    color: #4880ff;
+    background-color: #ffffff;
+    border-radius: 12px;
+    height: 100%;
+}
+
+//Search input box start
+::ng-deep #search-input .mat-form-field-wrapper {
+    padding: 0px !important;
+}
+
+::ng-deep #search-input .mat-form-field-underline {
+    display: none;
+}
+
+::ng-deep #search-input.mat-form-field-appearance-fill .mat-form-field-flex {
+    background-color: #ffffff;
+    padding-top: 3px;
+    border-radius: 12px;
+}
+
+::ng-deep #search-input.mat-form-field-appearance-fill .mat-form-field-infix {
+    padding-bottom: 3px;
+    width: 350px;
+}
+
+::ng-deep #search-input .mat-form-field-prefix {
+    padding-right: 15px;
+}
+
+.mat-menu-item.selected-filter {
+    // background-color: #eff3ff;
+    color:#4880ff;
+
+    .mat-icon.empty {
+        display: none;
+    }
+
+    .mat-icon.checked {
+        display: unset;
+        color: #4880ff;
+    }
+}
+
+.close-button{
+    border: none;
+    background-color: white;
+}
+
+.search-button{
+    border: none;
+}
+
+.buttons{
+    border: 1px solid  $primary;
+    padding: 0px 10px 0px 10px;
+
+    background-color: white;
+    color: $primary;
+    font-size: 13px;
+    line-height: 33px;
+    // width: 100%;
+   
+}

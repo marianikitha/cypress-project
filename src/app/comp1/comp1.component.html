@@ -1,0 +1,360 @@
+<!-- <div fxLayout="row" fxLayoutAlign="space-between none" class="screen-title">
+    <div fxLayout="column" fxLayoutAlign="center stretch">
+        <div class="screen-nav-item">BREACH ASSESSMENT</div>
+        <div class="screen-header">Breach Risk</div>
+    </div>
+    <div fxLayout="column" fxLayoutAlign="center center">
+        <div fxLayout="row" fxLayoutAlign="end center" fxLayoutGap="10px">
+            <form >
+                <mat-form-field id="search-input" appearance="fill">
+                    <mat-icon style="color: #7f87a4" matPrefix>search</mat-icon>
+                    <mat-label>Search Data Asset</mat-label>
+                    <input   matInput type="text"
+                         />
+                    <button matSuffix mat-icon-button aria-label="Clear" class="close-button">
+                        <mat-icon style="color: #7f87a4" >close</mat-icon>
+                    </button>
+                </mat-form-field>
+            </form>
+            <button class="search-button" mat-flat-button class="search-button" >SEARCH</button>
+        </div>
+    </div>
+  </div> -->
+ 
+  <div fxLayout="row" fxLayoutAlign="space-between none" class="screen-title">
+    <div fxLayout="column" fxLayoutAlign="center stretch">
+        <div class="screen-nav-item" data-subheader="sub-header">BREACH ASSESSMENT</div>
+        <div class="screen-header" data-header="header">Breach Risk</div>
+    </div>
+    <div fxLayout="column" fxLayoutAlign="center center" *ngIf="isLoading==false">
+        <div fxLayout="row" fxLayoutAlign="end center" fxLayoutGap="10px">
+            <form [formGroup]="searchForm">
+                <mat-form-field id="search-input" appearance="fill">
+                    <mat-icon style="color: #7f87a4" matPrefix data-search="search-icon">search</mat-icon>
+                    <mat-label>Search Data Asset</mat-label>
+                    <input [(ngModel)]='searchInputText' formControlName="searchInput" matInput type="text"
+                        (keyup.enter)="freeSearchSubmit()" data-search="search"/>
+                    <button matSuffix mat-icon-button aria-label="Clear" class="close-button" data-close="close-icon">
+                        <mat-icon style="color: #7f87a4" (click)="resetSearchForm()" >close</mat-icon>
+                    </button>
+                </mat-form-field>
+            </form>
+            <button class="search-button" mat-flat-button (click)="freeSearchSubmit()" data-searchbtn="search-button">SEARCH</button>
+        </div>
+    </div>
+</div>
+  <div fxLayout="column" style="max-height: calc(100vh - 100px)" fxLayoutAlign="stretch" *ngIf="isLoading==false">
+    <div class="card-content-item" fxLayout="row" fxLayoutAlign="space-between stretch">
+        <div fxLayout="row" fxLayoutAlign="start" class="max-width-end">
+            <div class="menu-item-text" data-totalrecords="total-records">{{ totalRecords }}
+                Records Found, Page {{ tableState.pageNumber }} of {{ totalPage }}</div>
+            <div class="menu-item-text" *ngIf="filters.length>0">
+                <button mat-stroked-button color="primary" [matBadge]="filters.length" class="clear-all-filter-button"
+                    (click)="removeAllFilters()" data-clear="clear-btn">
+                    <!-- <mat-icon color="primary" class="filter-icon">filter_list</mat-icon> -->
+                    Clear All
+                </button>
+            </div>
+        </div>
+    </div>
+    <div style="max-height: calc(100vh - 230px); overflow: auto">
+        <table mat-table (matSortChange)="sortData($event)" [dataSource]="dataSource" style="width: 100%" matSort>
+            <!--- Note that these columns can be defined in any order.
+        The actual rendered columns are set as a property on the row definition" -->
+
+            <!-- Data Asset Column -->
+            <ng-container matColumnDef="dataasset" sticky>
+                <th mat-header-cell *matHeaderCellDef class="table-header-font" mat-sort-header>Data Asset</th>
+                <td mat-cell *matCellDef="let element" class="column-width">
+                    <div fxLayout="row" class="data-asset"
+                        (mouseenter)="isCopied='element?.dataasset?.join(element?.dataassetDelimiter)';isClicked=''"
+                        (mouseleave)="isCopied=''">
+                        <div *ngIf="element?.dataasset?.length > 0" class="menu-item-text-value text-overflow"
+                            style="color: #4880ff; cursor: pointer" matTooltipClass="mat-tooltip-text"
+                            matTooltip="{{element?.dataasset?.join(element?.dataassetDelimiter)}}"
+                            (click)="viewDataCatalogPage(element)">
+                            {{ element?.dataasset[0] }} ... {{ element?.dataasset[element?.dataasset.length - 1] }}
+                        </div>
+                        <div>
+                            <mat-icon class="menu-item-icon-end" matTooltipClass="mat-tooltip-copy"
+                                #tooltip="matTooltip"
+                                (click)="isCopied='element?.dataasset?.join(element?.dataassetDelimiter)'; isClicked='element?.dataasset?.join(element?.dataassetDelimiter)'; tooltip.show()"
+                                [matTooltip]="isClicked==='element?.dataasset?.join(element?.dataassetDelimiter)' ? 'Copied!' : 'Copy'"
+                                cdkCopyToClipboard="{{element?.dataasset?.join(element?.dataassetDelimiter)}}">
+                                content_copy</mat-icon>
+                        </div>
+                    </div>
+                </td>
+            </ng-container>
+
+            <!-- Financial Impact Column -->
+            <ng-container matColumnDef="financialImpactInDollars">
+                <th mat-header-cell *matHeaderCellDef class="table-header-font" mat-sort-header>Financial Impact</th>
+                <td mat-cell *matCellDef="let element">
+                    <span *ngIf="element.financialImpactInDollars || element.financialImpactInDollars == '0'">
+                        ~${{ element.financialImpactInDollars }}
+                    </span>
+                    <span *ngIf="!element.financialImpactInDollars && element.financialImpactInDollars !== '0'"> -
+                    </span>
+                </td>
+            </ng-container>
+
+            <!--totalRows Column -->
+            <ng-container matColumnDef="totalRows">
+                <th mat-header-cell *matHeaderCellDef class="table-header-font" style="padding-left:20px;"
+                    mat-sort-header>Rows/Size</th>
+                <td mat-cell *matCellDef="let element" style="padding-left:20px;">
+                    <span *ngIf="!element.totalRows && element.totalRows !== 0"> - </span>
+                    <span *ngIf="element.totalRows || element.totalRows == 0">
+                        {{ element.totalRows }}
+                    </span>
+                </td>
+            </ng-container>
+
+            <!-- Users With Access Column -->
+            <ng-container matColumnDef="usersWithAccess">
+                <th mat-header-cell *matHeaderCellDef class="table-header-font" mat-sort-header>Users</th>
+                <td mat-cell *matCellDef="let element">
+                    <span *ngIf="element.usersWithAccess || element.usersWithAccess == 0">
+                        {{ element.usersWithAccess }}
+                    </span>
+                    <span *ngIf="!element.usersWithAccess && element.usersWithAccess !== 0"> - </span>
+                </td>
+            </ng-container>
+
+            <!-- Breach Risk Column -->
+            <ng-container matColumnDef="breachRisk">
+                <th mat-header-cell *matHeaderCellDef class="table-header-font">
+                    <div fxLayout="row" fxLayoutAlign="start center">
+                        <span class="column-filter-icon-spacing"
+                            *ngIf="columnItemFilteredCount(tableColumnFilters.breachRiskList)"
+                            [matBadge]="columnItemFilteredCount(tableColumnFilters.breachRiskList)"
+                            matBadgeOverlap="false">
+                            <div mat-sort-header arrowPosition="before">
+                                Breach Risk
+                            </div>
+                        </span>
+                        <span *ngIf="!columnItemFilteredCount(tableColumnFilters.breachRiskList)">
+                            <div mat-sort-header arrowPosition="before">
+                                Breach Risk
+                            </div>
+                        </span>
+                        <div>
+                            <button mat-icon-button [matMenuTriggerFor]="menu" class='dropdown-icon' data-cy="breach-drpbtn">
+                                <mat-icon>keyboard_arrow_down</mat-icon>
+                            </button>
+                            <mat-menu xPosition="before" #menu="matMenu" class="menu-panel-container">
+                                <div class="filter-item">
+                                    <ng-container
+                                        *ngFor="let risk of tableColumnFilters?.breachRiskList; let i = index">
+                                        <button [ngClass]="{'selected-filter': risk.isChecked === true}" mat-menu-item data-cy="breach-menu"
+                                            (click)="createFilter('breach-risk', risk, $event)" disableRipple="true"
+                                            matRipple matRippleColor="rgba(72, 128, 255, 0.1)">
+                                            <mat-icon class="empty">check_box_outline_blank</mat-icon>
+                                            <mat-icon class="checked red">check_box</mat-icon>
+                                            {{risk.key}}
+                                        </button>
+                                    </ng-container>
+                                </div>
+                                <div *ngIf="!tableColumnFilters?.breachRiskList?.length" class="empty-filter">Loading...
+                                </div>
+                            </mat-menu>
+                        </div>
+                    </div>
+                </th>
+
+                <td mat-cell *matCellDef="let element" style="padding-left: 20px">
+                    <ng-container *ngFor="let risk of tableColumnFilters?.breachRiskList; let i = index">
+                        <button *ngIf="risk.key?.toLowerCase() === element?.breachRisk?.toLowerCase()"
+                            disableRipple="true" class="onedpo-chip-{{risk.color}} button-chip" mat-flat-button>
+                            {{ element.breachRisk }}
+                        </button>
+                    </ng-container>
+                    <button disableRipple="true" class="button-chip" mat-flat-button>
+                        <span *ngIf="!element.breachRisk"> - </span>
+                    </button>
+                </td>
+            </ng-container>
+
+            <!-- Personal Data Column -->
+            <ng-container matColumnDef="personalData">
+                <th mat-header-cell *matHeaderCellDef class="table-header-font" mat-sort-header
+                    style="padding-left: 20px">Personal Data</th>
+                <td mat-cell *matCellDef="let element" style="padding-left: 20px">
+                    <ng-container *ngFor="let personalData of tableColumnProperties?.personalDataList; let i = index">
+                        <button
+                            *ngIf="personalData.key?.toLowerCase() === element?.personalData?.toLowerCase() && element?.personalData?.toLowerCase() !== 'no_pi'"
+                            disableRipple="true" class="onedpo-chip-{{personalData.color}} button-chip" mat-flat-button>
+                            {{ element.personalData }}
+                        </button>
+                    </ng-container>
+                    <button disableRipple="true" class="button-chip" mat-flat-button>
+                        <span *ngIf="element?.personalData?.toLowerCase() === 'no_pi' || !element.personalData">
+                            -
+                        </span>
+                    </button>
+                </td>
+            </ng-container>
+
+            <!-- Access Privilege Column -->
+            <ng-container matColumnDef="accessPrivilege">
+                <th mat-header-cell *matHeaderCellDef class="table-header-font">
+                    <div fxLayout="row" fxLayoutAlign="start center">
+                        <span class="column-filter-icon-spacing"
+                            *ngIf="columnItemFilteredCount(tableColumnFilters.accessPrivilegeList)"
+                            [matBadge]="columnItemFilteredCount(tableColumnFilters.accessPrivilegeList)"
+                            matBadgeOverlap="false">
+                            <div mat-sort-header arrowPosition="before">
+                                Access Privilege
+                            </div>
+                        </span>
+                        <span *ngIf="!columnItemFilteredCount(tableColumnFilters.accessPrivilegeList)">
+                            <div mat-sort-header arrowPosition="before">
+                                Access Privilege
+                            </div>
+                        </span>
+                        <div>
+                            <button mat-icon-button [matMenuTriggerFor]="menu" class='dropdown-icon'>
+                                <mat-icon>keyboard_arrow_down</mat-icon>
+                            </button>
+                            <mat-menu xPosition="before" #menu="matMenu" class="menu-panel-container">
+                                <div class="filter-item">
+                                    <ng-container
+                                        *ngFor="let access of tableColumnFilters?.accessPrivilegeList; let i = index">
+                                        <button [ngClass]="{'selected-filter': access.isChecked === true}" mat-menu-item
+                                            (click)="createFilter('access-privilege', access, $event)"
+                                            disableRipple="true" matRipple matRippleColor="rgba(72, 128, 255, 0.1)">
+                                            <mat-icon class="empty">check_box_outline_blank</mat-icon>
+                                            <mat-icon class="checked red">check_box</mat-icon>
+                                            {{access.key}}
+                                        </button>
+                                    </ng-container>
+                                </div>
+                                <div *ngIf="!tableColumnFilters?.accessPrivilegeList?.length" class="empty-filter">
+                                    Loading...</div>
+                            </mat-menu>
+                        </div>
+                    </div>
+                </th>
+                <td mat-cell *matCellDef="let element" style="padding-left: 20px">
+                    <span *ngIf="element.accessPrivilege">
+                        {{ element.accessPrivilege }}
+                    </span>
+                    <span *ngIf="!element.accessPrivilege"> - </span>
+                </td>
+            </ng-container>
+
+            <!-- Tags Column -->
+            <ng-container matColumnDef="tags">
+                <th mat-header-cell *matHeaderCellDef class="table-header-font" style="padding-left: 20px">
+                    <div fxLayout="row" fxLayoutAlign="start center">
+                        <span class="column-filter-icon-spacing"
+                            *ngIf="columnItemFilteredCount(tableColumnFilters.tagList)"
+                            [matBadge]="columnItemFilteredCount(tableColumnFilters.tagList)" matBadgeOverlap="false">
+                            <div>
+                                Tags
+                            </div>
+                        </span>
+                        <span *ngIf="!columnItemFilteredCount(tableColumnFilters.tagList)">
+                            <div>
+                                Tags
+                            </div>
+                        </span>
+                        <div>
+                            <button mat-icon-button [matMenuTriggerFor]="menu" class='dropdown-icon' data-cy="tags-drpbtn">
+                                <mat-icon>keyboard_arrow_down</mat-icon>
+                            </button>
+                            <mat-menu xPosition="before" #menu="matMenu" class="tags-menu-panel-container">
+                                <div class="filter-item">
+                                    <ng-container *ngFor="let tag of tableColumnFilters?.tagList; let i = index">
+                                        <button [ngClass]="{'selected-filter': tag.isChecked === true}" mat-menu-item
+                                        data-cy="menu-item"
+                                            (click)="createFilter('tags', tag, $event)" disableRipple="true" matRipple
+                                            matRippleColor="rgba(72, 128, 255, 0.1)">
+                                            <mat-icon class="empty">check_box_outline_blank</mat-icon>
+                                            <mat-icon class="checked red">check_box</mat-icon>
+                                            {{tag.key}}
+                                        </button>
+                                    </ng-container>
+                                </div>
+                                <div *ngIf="!tableColumnFilters?.tagList?.length" class="empty-filter">Loading...</div>
+                            </mat-menu>
+                        </div>
+                    </div>
+                </th>
+                <td mat-cell *matCellDef="let element" style="padding-left: 20px">
+                    <div [matTooltip]="element?.tags?.join(', ')" matTooltipClass="mat-tooltip">
+                        <ng-container>
+                            <div class="tags-overflow">{{ element?.tags?.join(', ')}}</div>
+                        </ng-container>
+                    </div>
+                    <div *ngIf="!element?.tags?.length">
+                        <span>-</span>
+                    </div>
+                </td>
+            </ng-container>
+
+            <!-- RecommendedAction Column -->
+            <ng-container matColumnDef="breachRecommendedAction">
+                <th mat-header-cell *matHeaderCellDef class="table-header-font">Recommendation</th>
+                <td mat-cell *matCellDef="let element">
+                    <div [matTooltip]="element?.breachRecommendedAction?.join(', ')" matTooltipClass="mat-tooltip">
+                        <ng-container>
+                            <div class="recommended-action-overflow">{{ element?.breachRecommendedAction?.join(', ')}}
+                            </div>
+                        </ng-container>
+                    </div>
+                    <div *ngIf="!element?.breachRecommendedAction?.length">
+                        <span>-</span>
+                    </div>
+                </td>
+            </ng-container>
+
+            <!-- Column Details Column -->
+            <ng-container matColumnDef="columnDetails" stickyEnd>
+                <th mat-header-cell *matHeaderCellDef class="table-header-font" style="padding-left: 16px"
+                    [hidden]="disableColumDetails">
+                    Details
+                </th>
+                <td mat-cell *matCellDef="let element" [hidden]="disableColumDetails">
+                    <div style="padding-left: 20px">
+                        <ng-container>
+                            <div>
+                                <button mat-stroked-button class="column-details-button"
+                                    (click)="getColumnDetails(element?.dataasset || [], element?.dataassetId || null)"
+                                    [disabled]="disableColumDetails">
+                                    More
+                                </button>
+                            </div>
+                        </ng-container>
+                    </div>
+                </td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true" style="background-color: #fafafa"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+            <!-- Row shown when there is no matching data. -->
+            <tr class="mat-row" *matNoDataRow>
+                <td class="mat-cell" colspan="12" *ngIf="isLoading==false && dataSource.data.length==0">
+                    <div fxLayout="row" fxLayoutAlign="center center">No data found</div>
+                </td>
+            </tr>
+        </table>
+    </div>
+    <div class="go-to-flex">
+        <div class="go-to-container">
+            <div class="go-to-label">Go To: </div>
+            <mat-form-field>
+                <input matInput type="number" autocomplete="off" value="{{tableState.pageNumber}}" min="1"
+                    max="{{totalPage}}" maxLength="{{totalPageLength}}"
+                    onkeypress="return this.value.length<this.maxLength;" (keyup.enter)="goToPage($event)" />
+            </mat-form-field>
+            <div class="totalPage-label"> / {{totalPage}}</div>
+        </div>
+        <div>
+            <mat-paginator data-paginator="paginator" (page)="pageChange($event)" [pageSize]="tableState.pageSize" [pageSizeOptions]="[15, 30, 45]"
+                [length]="totalRecords" showFirstLastButtons>
+            </mat-paginator>
+        </div>
+    </div>
+</div>

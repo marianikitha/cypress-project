@@ -1,0 +1,107 @@
+// @import "../../../../../../variables.scss";
+@import "../../variables.scss";
+
+.example-tree-invisible {
+    display: none;
+}
+
+.example-tree ul,
+.example-tree li {
+    margin-top: 0;
+    margin-bottom: 0;
+    list-style-type: none;
+}
+
+/*
+   * This padding sets alignment of the nested nodes.
+   */
+.example-tree .mat-nested-tree-node div[role='group'] {
+    padding-left: 20px;
+    border-left: 1px dashed #cccccc;
+    margin-left: 14px;
+}
+
+/*
+   * Padding for leaf nodes.
+   * Leaf nodes need to have padding so as to align with other non-leaf nodes
+   * under the same parent.
+   */
+.example-tree div[role='group']>.mat-tree-node {
+    // padding-left: 24px;
+}
+
+.mat-tree-node {
+    padding: 0px auto !important;
+    max-height: 28px;
+    font-family: Roboto;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 14px;
+    line-height: 18px;
+    color: #546e7a;
+    cursor: pointer;
+
+    &:hover,
+    :active {
+        background: #f1f3f4;
+    }
+}
+
+.selected-data-asset {
+    background: #f1f3f4;
+}
+
+.load-more-search {
+    font-family: Roboto;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 13px;
+    line-height: 18px;
+    /* identical to box height, or 180% */
+
+    letter-spacing: -0.0428571px;
+    text-decoration-line: underline;
+
+    color: #4880ff;
+
+    &:hover {}
+}
+
+.load-more {
+    font-family: Roboto;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 18px;
+    line-height: 18px;
+    /* identical to box height, or 180% */
+
+    letter-spacing: -0.0428571px;
+    // text-decoration-line: underline;
+    text-decoration: none;
+    color: #4880ff;
+
+    &:hover {}
+}
+
+::ng-deep #circle-icon.mat-icon {
+    height: 20px !important;
+    width: 20px !important;
+    font-size: 20px !important;
+    line-height: 1 !important;
+}
+
+.node-name {
+    margin: 2px 10px;
+}
+
+.horizontal-line {
+    border-top: 1px dashed #cccccc;
+    width: 20px;
+    margin-left: -25px;
+}
+
+.tree-container-body {
+    height: calc(100vh - 230px);
+    overflow: scroll;
+}
+

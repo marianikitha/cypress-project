@@ -1,0 +1,726 @@
+<div fxLayout="row" fxLayoutAlign="space-between none" class="screen-title">
+    <div fxLayout="column" fxLayoutAlign="center stretch">
+        <div class="screen-nav-item">Actions</div>
+        <div class="screen-header">Data Catalog</div>
+    </div>
+</div>
+
+
+<div fxLayout="row wrap">
+    <div fxFlex="auto" fxFlex.xs="100%" fxFlex.gt-xs="100%" fxFlex.sm="100%" fxFlex.gt-sm="29%"
+        style="margin-bottom: 20px">
+        <mat-card class="data-catalog-card input-field-alignment tree-body" style="height: calc(100vh - 140px);">
+            <app-tree-view (fetchDataInformation)="fetchDataInformation($event)"></app-tree-view>
+        </mat-card>
+    </div>
+    <div fxFlex.gt-sm="2%"></div>
+    <div *ngIf="selectedDatasource" fxFlex="auto" fxFlex.xs="100%" fxFlex.gt-xs="100%" fxFlex.sm="100%"
+        fxFlex.gt-sm="69%">
+        <mat-card class="data-catalog-card input-field-alignment"
+            style="height: calc(45vh - 70.5px); padding: 0px; margin-bottom: 20px; overflow: auto">
+            <div class="data-asset-title">Data Asset Details</div>
+            <div class="list-body">
+                <div class="list-item-child">
+                    <div fxLayout="row wrap">
+                        <div fxFlex="auto" fxFlex.xs="100%" fxFlex.gt-xs="100%" fxFlex.sm="20%" fxFlex.gt-sm="20%"
+                            class="list-item-key">
+                            Path
+                        </div>
+                        <div fxFlex="auto" fxFlex.xs="100%" fxFlex.gt-xs="100%" fxFlex.sm="78%" fxFlex.gt-sm="78%"
+                            class="list-item-value">
+                            {{ dataDetails.datasourcePath.join(dataDetails.dataassetDelimiter) }}
+                        </div>
+                    </div>
+                </div>
+                <mat-divider></mat-divider>
+
+                <div class="list-item-child list-background-color">
+                    <div fxLayout="row wrap">
+                        <div fxFlex="auto" fxFlex.xs="100%" fxFlex.gt-xs="20%" fxFlex.sm="20%" fxFlex.gt-sm="20%"
+                            class="list-item-key">
+                            Type
+                        </div>
+                        <div fxFlex="auto" fxFlex.xs="100%" fxFlex.gt-xs="78%" fxFlex.sm="78%" fxFlex.gt-sm="78%"
+                            class="list-item-value">
+                            {{ dataDetails.type }}
+                        </div>
+                    </div>
+                </div>
+                <mat-divider></mat-divider>
+
+                <div class="list-item-child">
+                    <div fxLayout="row wrap">
+                        <div fxFlex="auto" fxFlex.xs="100%" fxFlex.gt-xs="20%" fxFlex.sm="20%" fxFlex.gt-sm="20%"
+                            class="list-item-key" style="margin: auto 0px">
+                            Owner
+                        </div>
+                        <div fxFlex="auto" fxFlex.xs="100%" fxFlex.gt-xs="78%" fxFlex.sm="78%" fxFlex.gt-sm="78%"
+                            class="list-item-value">
+                            <div fxLayout="row wrap" fxLayoutAlign="space-between center">
+                                <div fxLayout="row wrap" style="margin: auto 0px; padding-bottom: 5px">
+                                    <div fxFlex="auto" style="margin: auto 0px" *ngIf="!dataDetails.dataOwner.length">
+                                        -
+                                    </div>
+
+                                    <div fxFlex="auto" style="margin: auto 0px" fxLayout="row"
+                                        fxLayoutAlign="start center" *ngIf="dataDetails.dataOwner.length">
+                                        <div aria-label="dataOwner" class="mat-chip-body">
+                                            <ng-container *ngFor="let item of dataDetails.dataOwner; index as i">
+                                                <div *ngIf="i < 2" style="margin-right: 5px;display: inline-block;">{{
+                                                    item }} {{ getComma(dataDetails.dataOwner, i)}}
+                                                </div>
+                                            </ng-container>
+                                        </div>
+                                    </div>
+                                    <div fxFlex="auto" style="margin: auto 0px"
+                                        *ngIf="dataDetails.dataOwner.length > 2">
+                                        <div class="view-more-tags" (click)="tooltip.toggle()" #tooltip="matTooltip"
+                                            matTooltip="{{ dataDetails.dataOwner.join(', ') }}"
+                                            matTooltipPosition="below">
+                                            +{{ dataDetails.dataOwner.length - 2 }} more owner
+                                        </div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <button class="view-column-details" mat-button matSuffix mat-stroked-button
+                                        aria-label="search" color="primary" style="font-size: 11px; line-height: 28px"
+                                        (click)="addDataOwnerDialog()" [disabled]="isHistory">
+                                        ASSIGN DATA OWNER
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <mat-divider></mat-divider>
+
+                <div class="list-item-child list-background-color">
+                    <div fxLayout="row wrap">
+                        <div fxFlex="auto" fxFlex.xs="100%" fxFlex.gt-xs="20%" fxFlex.sm="20%" fxFlex.gt-sm="20%"
+                            class="list-item-key">
+                            Category
+                        </div>
+                        <div fxFlex="auto" fxFlex.xs="100%" fxFlex.gt-xs="78%" fxFlex.sm="78%" fxFlex.gt-sm="78%"
+                            class="list-item-value">
+                            <div fxFlex="auto" style="margin: auto 0px" *ngIf="!dataDetails.category.length">-</div>
+                            <mat-chip-list aria-label="categories" *ngIf="dataDetails.category.length">
+                                <mat-chip *ngFor="let item of dataDetails.category"
+                                    class="chip-small onedpo-chip-{{item.color}}">
+                                    {{ item.key }}
+                                </mat-chip>
+                            </mat-chip-list>
+                        </div>
+                    </div>
+                </div>
+                <mat-divider></mat-divider>
+
+                <div class="list-item-child">
+                    <div fxLayout="row wrap">
+                        <div fxFlex="auto" fxFlex.xs="100%" fxFlex.gt-xs="20%" fxFlex.sm="20%" fxFlex.gt-sm="20%"
+                            class="list-item-key" style="margin: auto 0px">
+                            Tags
+                        </div>
+                        <div fxFlex="auto" fxFlex.xs="100%" fxFlex.gt-xs="78%" fxFlex.sm="78%" fxFlex.gt-sm="78%"
+                            class="list-item-value">
+                            <div fxLayout="row wrap" fxLayoutAlign="space-between center">
+                                <div fxFlex="auto" style="margin: auto 0px" *ngIf="!dataDetails.tags.length">-</div>
+                                <div fxLayout="row wrap" style="margin: auto 0px; padding-bottom: 5px"
+                                    *ngIf="dataDetails.tags.length">
+                                    <div fxFlex="auto" style="margin: auto 0px" fxLayout="row"
+                                        fxLayoutAlign="start center">
+                                        <mat-chip-list aria-label="categories" class="mat-chip-body">
+                                            <ng-container *ngFor="let item of dataDetails.tags; index as i">
+                                                <mat-chip class="chip-small chip-primary" *ngIf="i < 3">{{ item }}
+                                                </mat-chip>
+                                            </ng-container>
+                                        </mat-chip-list>
+                                    </div>
+                                    <div fxFlex="auto" style="margin: auto 0px" *ngIf="dataDetails.tags.length > 3">
+                                        <div class="view-more-tags" (click)="tooltip.toggle()" #tooltip="matTooltip"
+                                            matTooltip="{{ dataDetails.tags.join(', ') }}" matTooltipPosition="below"
+                                            matTooltipClass="mat-tooltip">
+                                            +{{ dataDetails.tags.length - 3 }} more tags
+                                        </div>
+                                    </div>
+                                </div>
+                                <div style="margin: auto 0px">
+                                    <button class="view-column-details" mat-button matSuffix mat-stroked-button
+                                        aria-label="search" color="primary" style="font-size: 11px; line-height: 28px"
+                                        (click)="
+                                            getColumnDetails(
+                                                selectedDatasource?.datasourcePath || [],
+                                                selectedDatasource?.dataassetId || null
+                                            )
+                                        " [hidden]="isColumnDetailsDisabled()">
+                                        COLUMN DETAILS
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </mat-card>
+        <mat-card class="data-catalog-card input-field-alignment"
+            style="height: calc(55vh - 93px); padding: 0px; margin-bottom: 20px">
+            <mat-tab-group (selectedTabChange)="onTabChange($event)">
+                <mat-tab label="PRIVACY">
+                    <div style="padding: 15px 16px" class="metadata-body">
+                        <mat-accordion>
+                            <!-- Begin Consent Tracking -->
+                            <mat-expansion-panel class="card-outline-shadow" (opened)="panelOpenState = true"
+                                (closed)="panelOpenState = false">
+                                <mat-expansion-panel-header style="height: 45px">
+                                    <mat-panel-title class="accordian-title"> Consent Tracking </mat-panel-title>
+                                </mat-expansion-panel-header>
+
+                                <div fxLayout="row wrap">
+                                    <form [formGroup]="sourcePurposeForm" (ngSubmit)="addDataSourcePurpose()" novalidate
+                                        style="width: 100%">
+                                        <div fxFlex="auto" fxFlex.xs="100%" fxFlex.gt-xs="100%" fxFlex.sm="80%"
+                                            fxFlex.gt-sm="80%">
+                                            <mat-form-field appearance="outline" style="width: 100%">
+                                                <mat-label>Consent</mat-label>
+                                                <mat-select name="option" formControlName="consent">
+                                                    <mat-option *ngFor="let option of sourcePurposeList"
+                                                        [value]="option">
+                                                        {{ option.name }}
+                                                    </mat-option>
+                                                    <mat-option *ngIf="!sourcePurposeList?.length">
+                                                        No Data Found
+                                                    </mat-option>
+                                                </mat-select>
+                                            </mat-form-field>
+                                        </div>
+                                        <div fxFlex="auto" fxFlex.xs="100%" fxFlex.gt-xs="100%" fxFlex.sm="20%"
+                                            fxFlex.gt-sm="20%">
+                                            <button type="submit" class="view-column-details" mat-button matSuffix
+                                                mat-stroked-button aria-label="search" color="primary"
+                                                style="font-size: 11px; width: 100%" [disabled]="isHistory">
+                                                ADD
+                                            </button>
+                                        </div>
+                                    </form>
+                                </div>
+
+                                <div fxLayout="row wrap" style="height: 100px; overflow: auto"
+                                    *ngIf="dataSourcePurposeTableList.length">
+                                    <div fxFlex="auto" class="table-odd-row">
+                                        <table mat-table [dataSource]="dataSourcePurposeTableList"
+                                            class="mat-elevation-z0" style="
+                                                padding: 0px 5px;
+                                                margin: 0px 8px;
+                                                width: calc(100% - 16px);
+                                                max-height: 100px;
+                                                overflow: auto;
+                                            ">
+                                            <!-- Sl no Column -->
+                                            <ng-container matColumnDef="sl_no">
+                                                <th mat-header-cell *matHeaderCellDef>SL No</th>
+                                                <td mat-cell *matCellDef="let element; let i = index">{{ i + 1 }}</td>
+                                            </ng-container>
+
+                                            <!-- Name Column -->
+                                            <ng-container matColumnDef="name">
+                                                <th mat-header-cell *matHeaderCellDef>Name</th>
+                                                <td mat-cell *matCellDef="let element">{{ element.name }}</td>
+                                            </ng-container>
+
+                                            <!-- Action Column -->
+                                            <ng-container matColumnDef="action">
+                                                <th mat-header-cell *matHeaderCellDef>Action</th>
+                                                <td mat-cell *matCellDef="let element">
+                                                    <button class="view-column-details delete-button" mat-button
+                                                        matSuffix mat-stroked-button aria-label="search" color="warn"
+                                                        (click)="deleteDataSourcePurpose(element)"
+                                                        [disabled]="isHistory">
+                                                        Delete
+                                                    </button>
+                                                </td>
+                                            </ng-container>
+
+                                            <tr mat-header-row
+                                                *matHeaderRowDef="displayedSourcePurposeColumns; sticky: true"></tr>
+                                            <tr mat-row *matRowDef="let row; columns: displayedSourcePurposeColumns">
+                                            </tr>
+                                        </table>
+                                    </div>
+                                </div>
+
+                                <div fxLayout="row wrap" *ngIf="!dataSourcePurposeTableList.length">
+                                    <div fxFlex="auto">
+                                        <mat-card class="mat-elevation-z0 card retention-card metadata-card-margin">
+                                            <mat-card-subtitle class="retention-card-header">
+                                                No data found</mat-card-subtitle>
+                                        </mat-card>
+                                    </div>
+                                </div>
+                            </mat-expansion-panel>
+                            <!-- End Consent Tracking -->
+
+                            <!-- Begin Data Subject Type Tracking -->
+                            <mat-expansion-panel class="card-outline-shadow" (opened)="panelOpenState = true"
+                                (closed)="panelOpenState = false">
+                                <mat-expansion-panel-header style="height: 45px">
+                                    <mat-panel-title class="accordian-title"> Add Data Subject Type </mat-panel-title>
+                                </mat-expansion-panel-header>
+
+                                <div fxLayout="row wrap">
+                                    <form [formGroup]="subjectTypeForm" (ngSubmit)="addDataSubjectType()" novalidate
+                                        style="width: 100%">
+                                        <div fxFlex="auto" fxFlex.xs="100%" fxFlex.gt-xs="100%" fxFlex.sm="80%"
+                                            fxFlex.gt-sm="80%">
+                                            <mat-form-field appearance="outline" style="width: 100%">
+                                                <mat-label>Data Subject Type</mat-label>
+                                                <mat-select name="option" formControlName="subjectType">
+                                                    <mat-option *ngFor="let option of subjectTypeList" [value]="option">
+                                                        {{ option.name }}
+                                                    </mat-option>
+                                                    <mat-option *ngIf="!subjectTypeList?.length">
+                                                        No Data Found
+                                                    </mat-option>
+                                                </mat-select>
+                                            </mat-form-field>
+                                        </div>
+                                        <div fxFlex="auto" fxFlex.xs="100%" fxFlex.gt-xs="100%" fxFlex.sm="20%"
+                                            fxFlex.gt-sm="20%">
+                                            <button class="view-column-details" mat-button matSuffix mat-stroked-button
+                                                aria-label="search" color="primary" style="font-size: 11px; width: 100%"
+                                                [disabled]="isHistory">
+                                                ADD
+                                            </button>
+                                        </div>
+                                    </form>
+                                </div>
+
+                                <div fxLayout="row wrap" style="height: 100px; overflow: auto"
+                                    *ngIf="dataSubjectTypeTableList.length">
+                                    <div fxFlex="auto" class="table-odd-row">
+                                        <table mat-table [dataSource]="dataSubjectTypeTableList"
+                                            class="mat-elevation-z0 table-odd-row" style="
+                                                padding: 0px 5px;
+                                                margin: 0px 8px;
+                                                width: calc(100% - 16px);
+                                                max-height: 100px;
+                                                overflow: auto;
+                                            ">
+                                            <!-- Sl no Column -->
+                                            <ng-container matColumnDef="sl_no">
+                                                <th mat-header-cell *matHeaderCellDef>SL No</th>
+                                                <td mat-cell *matCellDef="let element; let i = index">{{ i + 1 }}</td>
+                                            </ng-container>
+
+                                            <!-- Name Column -->
+                                            <ng-container matColumnDef="name">
+                                                <th mat-header-cell *matHeaderCellDef>Data Subject Type</th>
+                                                <td mat-cell *matCellDef="let element">{{ element.name }}</td>
+                                            </ng-container>
+
+                                            <!-- Action Column -->
+                                            <ng-container matColumnDef="action">
+                                                <th mat-header-cell *matHeaderCellDef>Action</th>
+                                                <td mat-cell *matCellDef="let element">
+                                                    <button class="view-column-details delete-button" mat-button
+                                                        matSuffix mat-stroked-button aria-label="search" color="warn"
+                                                        (click)="deleteDataSubjectType(element)" [disabled]="isHistory">
+                                                        Delete
+                                                    </button>
+                                                </td>
+                                            </ng-container>
+
+                                            <tr mat-header-row
+                                                *matHeaderRowDef="displayedDataSubjectTypeColumns; sticky: true"></tr>
+                                            <tr mat-row *matRowDef="let row; columns: displayedDataSubjectTypeColumns">
+                                            </tr>
+                                        </table>
+                                    </div>
+                                </div>
+
+                                <div fxLayout="row wrap" *ngIf="!dataSubjectTypeTableList.length">
+                                    <div fxFlex="auto">
+                                        <mat-card class="mat-elevation-z0 card retention-card metadata-card-margin">
+                                            <mat-card-subtitle class="retention-card-header">
+                                                No data found</mat-card-subtitle>
+                                        </mat-card>
+                                    </div>
+                                </div>
+                            </mat-expansion-panel>
+                            <!-- End Data Subject Type Tracking -->
+
+                            <!-- Begin Data Subject Location Tracking -->
+                            <mat-expansion-panel class="card-outline-shadow" (opened)="panelOpenState = true"
+                                (closed)="panelOpenState = false">
+                                <mat-expansion-panel-header style="height: 45px">
+                                    <mat-panel-title class="accordian-title">
+                                        Add Data Subject Location
+                                    </mat-panel-title>
+                                </mat-expansion-panel-header>
+
+                                <div fxLayout="row wrap">
+                                    <form [formGroup]="locationForm" (ngSubmit)="addDataLocation()" novalidate
+                                        style="width: 100%">
+                                        <div fxFlex="auto" fxFlex.xs="100%" fxFlex.gt-xs="100%"
+                                            fxFlex.sm="{{ showOrHideLocationState() ? '80%' : '40%' }}"
+                                            fxFlex.gt-sm="{{ showOrHideLocationState() ? '80%' : '40%' }}">
+                                            <mat-form-field appearance="outline" style="width: 100%">
+                                                <mat-label>Location</mat-label>
+                                                <input type="text" placeholder="Choose Country" aria-label="country"
+                                                    matInput [matAutocomplete]="auto" formControlName="country" />
+                                                <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete"
+                                                    [displayWith]="displayCountry">
+                                                    <mat-option *ngFor="let option of countriesList$ | async"
+                                                        [value]="option">
+                                                        <b>{{ option.code }}</b> {{ option.label }}
+                                                    </mat-option>
+                                                    <mat-option *ngIf="!(countriesList$ | async)?.length"
+                                                        [value]="null">
+                                                        No Data Found
+                                                    </mat-option>
+                                                </mat-autocomplete>
+                                            </mat-form-field>
+                                        </div>
+
+                                        <div fxFlex="auto" fxFlex.xs="100%" fxFlex.gt-xs="100%" fxFlex.sm="40%"
+                                            fxFlex.gt-sm="40%" *ngIf="!showOrHideLocationState()">
+                                            <mat-form-field appearance="outline" style="width: 100%">
+                                                <mat-label>State</mat-label>
+                                                <input type="text" placeholder="Choose State" aria-label="state"
+                                                    matInput [matAutocomplete]="auto" formControlName="state" />
+                                                <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete"
+                                                    [displayWith]="displayState">
+                                                    <mat-option *ngFor="let option of statesList$ | async"
+                                                        [value]="option">
+                                                        {{ option.label }}
+                                                    </mat-option>
+                                                    <mat-option *ngIf="!(statesList$ | async)?.length" [value]="null">
+                                                        No Data Found
+                                                    </mat-option>
+                                                </mat-autocomplete>
+                                            </mat-form-field>
+                                        </div>
+
+                                        <div fxFlex="auto" fxFlex.xs="100%" fxFlex.gt-xs="100%" fxFlex.sm="20%"
+                                            fxFlex.gt-sm="20%">
+                                            <button class="view-column-details" mat-button matSuffix mat-stroked-button
+                                                aria-label="search" color="primary" style="font-size: 11px; width: 100%"
+                                                [disabled]="isHistory">
+                                                ADD
+                                            </button>
+                                        </div>
+                                    </form>
+                                </div>
+
+                                <div fxLayout="row wrap" style="height: 100px; overflow: auto"
+                                    *ngIf="dataLocationTableList.length">
+                                    <div fxFlex="auto" class="table-odd-row">
+                                        <table mat-table [dataSource]="dataLocationTableList"
+                                            class="mat-elevation-z0 table-odd-row" style="
+                                                padding: 0px 5px;
+                                                margin: 0px 8px;
+                                                width: calc(100% - 16px);
+                                                max-height: 100px;
+                                                overflow: auto;
+                                            ">
+                                            <!-- Sl no Column -->
+                                            <ng-container matColumnDef="sl_no">
+                                                <th mat-header-cell *matHeaderCellDef>SL No</th>
+                                                <td mat-cell *matCellDef="let element; let i = index">{{ i + 1 }}</td>
+                                            </ng-container>
+
+                                            <!-- Name Column -->
+                                            <ng-container matColumnDef="name">
+                                                <th mat-header-cell *matHeaderCellDef>Location</th>
+                                                <td mat-cell *matCellDef="let element">
+                                                    {{ element.country }}
+                                                    {{ element.state ? ' / ' + element.state : '' }}
+                                                </td>
+                                            </ng-container>
+
+                                            <!-- Action Column -->
+                                            <ng-container matColumnDef="action">
+                                                <th mat-header-cell *matHeaderCellDef>Action</th>
+                                                <td mat-cell *matCellDef="let element">
+                                                    <button class="view-column-details delete-button" mat-button
+                                                        matSuffix mat-stroked-button aria-label="search" color="warn"
+                                                        (click)="deleteDataLocation(element)" [disabled]="isHistory">
+                                                        Delete
+                                                    </button>
+                                                </td>
+                                            </ng-container>
+
+                                            <tr mat-header-row
+                                                *matHeaderRowDef="displayedDataSubjectTypeColumns; sticky: true"></tr>
+                                            <tr mat-row *matRowDef="let row; columns: displayedDataSubjectTypeColumns">
+                                            </tr>
+                                        </table>
+                                    </div>
+                                </div>
+
+                                <div fxLayout="row wrap" *ngIf="!dataLocationTableList.length">
+                                    <div fxFlex="auto">
+                                        <mat-card class="mat-elevation-z0 card retention-card metadata-card-margin">
+                                            <mat-card-subtitle class="retention-card-header">
+                                                No data found</mat-card-subtitle>
+                                        </mat-card>
+                                    </div>
+                                </div>
+                            </mat-expansion-panel>
+                            <!-- End Data Subject Location -->
+
+                            <!-- Begin Data Retention -->
+                            <mat-expansion-panel class="card-outline-shadow" (opened)="panelOpenState = true"
+                                (closed)="panelOpenState = false">
+                                <mat-expansion-panel-header style="height: 45px">
+                                    <mat-panel-title class="accordian-title"> Add Retention Time </mat-panel-title>
+                                </mat-expansion-panel-header>
+
+                                <div fxLayout="row wrap">
+                                    <form [formGroup]="retentionForm" (ngSubmit)="addDataRetention()" novalidate
+                                        style="width: 100%">
+                                        <div fxFlex="auto" fxFlex.xs="100%" fxFlex.gt-xs="100%"
+                                            fxFlex.sm="{{ showOrHideRetentionTime() ? '80%' : '40%' }}"
+                                            fxFlex.gt-sm="{{ showOrHideRetentionTime() ? '80%' : '40%' }}">
+                                            <mat-form-field appearance="outline" style="width: 100%">
+                                                <mat-label>Retention Type</mat-label>
+                                                <mat-select name="option" formControlName="type">
+                                                    <mat-option *ngFor="let option of retentionTypeList"
+                                                        [value]="option.type">
+                                                        {{ option.name }}
+                                                    </mat-option>
+                                                    <mat-option *ngIf="!retentionTypeList?.length">
+                                                        No Data Found
+                                                    </mat-option>
+                                                </mat-select>
+                                            </mat-form-field>
+                                        </div>
+                                        <div fxFlex="auto" fxFlex.xs="100%" fxFlex.gt-xs="100%" fxFlex.sm="40%"
+                                            fxFlex.gt-sm="40%" *ngIf="!showOrHideRetentionTime()">
+                                            <mat-form-field appearance="outline" style="width: 100%">
+                                                <mat-label>Retention Time</mat-label>
+                                                <input matInput type="number" formControlName="duration"
+                                                    maxlength="1" />
+                                            </mat-form-field>
+                                        </div>
+                                        <div fxFlex="auto" fxFlex.xs="100%" fxFlex.gt-xs="100%" fxFlex.sm="20%"
+                                            fxFlex.gt-sm="20%">
+                                            <button class="view-column-details" mat-button matSuffix mat-stroked-button
+                                                aria-label="search" color="primary" style="font-size: 11px; width: 100%"
+                                                [disabled]="isHistory">
+                                                ADD
+                                            </button>
+                                        </div>
+                                    </form>
+                                </div>
+
+                                <div fxLayout="row wrap">
+                                    <div fxFlex="auto">
+                                        <mat-card class="mat-elevation-z0 card retention-card metadata-card-margin">
+                                            <mat-card-subtitle class="retention-card-header">Retention Time Validity
+                                            </mat-card-subtitle>
+                                            <mat-card-content class="retention-table" *ngIf="dataRetention.type !== ''">
+                                                {{ retentionFormatter(dataRetention) }} </mat-card-content>
+                                            <mat-card-content class="retention-table" *ngIf="dataRetention.type === ''">
+                                                - </mat-card-content>
+                                        </mat-card>
+                                    </div>
+                                </div>
+                            </mat-expansion-panel>
+                            <!-- End Data Retention -->
+
+                            <!-- Begin Data Has Minor Information -->
+                            <mat-expansion-panel class="card-outline-shadow" (opened)="panelOpenState = true"
+                                (closed)="panelOpenState = false">
+                                <mat-expansion-panel-header style="height: 45px">
+                                    <mat-panel-title class="accordian-title"> Has Minor Data </mat-panel-title>
+                                </mat-expansion-panel-header>
+
+                                <div fxLayout="row wrap">
+                                    <form [formGroup]="hasMinorDataForm" (ngSubmit)="addDataHasMinorInformation()"
+                                        novalidate style="width: 100%">
+                                        <div fxFlex="auto" fxFlex.xs="100%" fxFlex.gt-xs="100%" fxFlex.sm="80%"
+                                            fxFlex.gt-sm="80%">
+                                            <mat-form-field appearance="outline" style="width: 100%">
+                                                <mat-label>Has Minor Data</mat-label>
+                                                <mat-select name="option" formControlName="hasMinorData">
+                                                    <mat-option *ngFor="let option of hasMinorDataList"
+                                                        [value]="option.type">
+                                                        {{ option.name }}
+                                                    </mat-option>
+                                                    <mat-option *ngIf="!hasMinorDataList?.length">
+                                                        No Data Found
+                                                    </mat-option>
+                                                </mat-select>
+                                            </mat-form-field>
+                                        </div>
+                                        <div fxFlex="auto" fxFlex.xs="100%" fxFlex.gt-xs="100%" fxFlex.sm="20%"
+                                            fxFlex.gt-sm="20%">
+                                            <button class="view-column-details" mat-button matSuffix mat-stroked-button
+                                                aria-label="search" color="primary" style="font-size: 11px; width: 100%"
+                                                [disabled]="isHistory">
+                                                ADD
+                                            </button>
+                                        </div>
+                                    </form>
+                                </div>
+
+                                <div fxLayout="row wrap">
+                                    <div fxFlex="auto">
+                                        <mat-card class="mat-elevation-z0 card retention-card metadata-card-margin">
+                                            <mat-card-subtitle class="retention-card-header">Data Has Minor Information
+                                            </mat-card-subtitle>
+                                            <mat-card-content class="retention-table">{{
+                                                dataHasMinorInformation == true
+                                                ? 'Yes'
+                                                : dataHasMinorInformation == false
+                                                ? 'No'
+                                                : '-'
+                                                }}</mat-card-content>
+                                        </mat-card>
+                                    </div>
+                                </div>
+                            </mat-expansion-panel>
+                            <!-- End Data Has Minor Information -->
+                        </mat-accordion>
+                    </div>
+                </mat-tab>
+                <mat-tab label="ACCESS" data-access="access-tab" *ngIf="this.selectedDatasource?.dataassetId">
+                    <div class="access-container ">
+                        <mat-card class="data-catalog-card users-card">
+                            <mat-card-subtitle class="users-card-header">Users with Access</mat-card-subtitle>
+                            <mat-card-content class="users-table table-parent-layout">
+                                <div (scroll)="onTableScroll($event)" style="overflow: scroll;" [ngStyle]="{ 'height': !dataSource.data.length ? '0px': '186px' }">
+                                <table class="mat-elevation-z0 data-available-section" mat-table matSort
+                                    #table [dataSource]="dataSource" multiTemplateDataRows>
+                                   
+
+                                        <!-- (wheel)="onTableScroll($event)" -->
+                                    <!-- <table mat-table [dataSource]="usersTableList" class="mat-elevation-z0 data-available-section"
+                                    style="width: calc(100% - 16px)" *ngIf="usersTableList.length"> -->
+                                    <!-- Name Column -->
+                                    <ng-container matColumnDef="name">
+                                        <th mat-header-cell *matHeaderCellDef> Users </th>
+                                        <td mat-cell *matCellDef="let element" class="table-field">
+                                            {{ element.name }}
+                                        </td>
+                                    </ng-container>
+
+                                    <!-- Access to personal data Column -->
+                                    <ng-container matColumnDef="column_tags">
+                                        <th mat-header-cell *matHeaderCellDef class="column-tags-data"> Access to
+                                            Personal Data </th>
+                                        <!-- <td mat-cell *matCellDef="let element" class="table-field">
+                                            {{ element.columns.join(',') }}
+                                        </td> -->
+                                        <td mat-cell class="column-tags-data" *matCellDef="let element">
+                                            <div class="expand-element-column-data">
+                                                <ng-container>
+                                                    <!-- <div *ngIf="element.columns.length == 1" class="user-tags-overflow">
+                                                        {{element.formattedColumns[0]}}
+                                                    </div> -->
+                                                    <div class="user-tags-overflow" #tooltip="matTooltip"
+                                                        matTooltip="{{element.formattedColumns.join(', ')}}"
+                                                        matTooltipPosition="below">
+                                                        {{element.formattedColumns.join(', ')}}
+                                                    </div>
+
+                                                    <!-- <div *ngIf="element.columns.length > 1" class="user-tags-overflow">
+                                                        {{element.formattedColumns.join(', ')}}
+                                                    </div> -->
+                                                    <div *ngIf="element.columns.length > 1" class="see-more-button">
+                                                        <a
+                                                            (click)="(expandedElement = expandedElement === element ? null : element); $event.stopPropagation()">
+                                                            see
+                                                            more</a>
+                                                    </div>
+                                                    <!-- <div *ngIf="element.columns.length <= 2" #tooltip="matTooltip" -->
+                                                    
+                                                </ng-container>
+                                            </div>
+                                            <div *ngIf="!element?.columns?.length">
+                                                <span>-</span>
+                                            </div>
+                                        </td>
+                                    </ng-container>
+
+                                    <!-- Active used Column -->
+                                    <ng-container matColumnDef="active_used">
+                                        <th mat-header-cell *matHeaderCellDef class="last-used-date-header"> Active Used
+                                        </th>
+                                        <td mat-cell *matCellDef="let element" class="table-field">
+                                            <div *ngIf="element.lastUsedDate!='-'" class="last-used-date-row">
+                                                <mat-icon class="check-icon">check_circle</mat-icon>
+                                                <div>{{ element.lastUsedDate}}</div>
+                                            </div>
+                                            <div *ngIf="element.lastUsedDate=='-'" class="last-used-date-data">
+                                                {{ element.lastUsedDate}}
+                                            </div>
+                                        </td>
+                                    </ng-container>
+
+                                    <ng-container matColumnDef="expandedDetail">
+                                        <td mat-cell *matCellDef="let element"
+                                            [attr.colspan]="displayedUsersColumns.length">
+                                            <div *ngIf="element == expandedElement && element.columns.length>1" class="expand-element-detail"
+                                                [@detailExpand]="element == expandedElement ? 'expanded' : 'collapsed'">
+                                                <table mat-table class="data-available-section" matSort
+                                                    [dataSource]="element.columns">
+                                                    <ng-container matColumnDef="column_name">
+                                                        <th mat-header-cell *matHeaderCellDef class="table-header">
+                                                            Column Name</th>
+                                                        <td mat-cell *matCellDef="let item" class="table-field">
+                                                            {{item.column}}
+                                                        </td>
+                                                    </ng-container>
+                                                    <ng-container matColumnDef="tags">
+                                                        <th mat-header-cell *matHeaderCellDef class="table-header">Tags
+                                                        </th>
+                                                        <td mat-cell *matCellDef="let item"
+                                                            class="table-field user-tags-overflow" #tooltip="matTooltip"
+                                                            matTooltip="{{item.tags.join(', ')}}"
+                                                            matTooltipPosition="below">
+                                                            {{item.tags.join(", ")}}
+                                                        </td>
+                                                    </ng-container>
+                                                    <tr mat-header-row *matHeaderRowDef="columnsToDisplay;sticky: true">
+                                                    </tr>
+                                                    <tr mat-row *matRowDef="let element; columns: columnsToDisplay;"
+                                                        class="column-data-row"></tr>
+                                                </table>
+                                            </div>
+                                        </td>
+                                    </ng-container>
+
+                                    <tr mat-header-row *matHeaderRowDef="displayedUsersColumnsWithExpand; sticky: true">
+                                    </tr>
+                                    <tr mat-row *matRowDef="let element; columns: displayedUsersColumnsWithExpand"
+                                        class="expand-element-row"
+                                        [class.expand-expanded-row]="expandedElement === element"
+                                        (click)="expandedElement = expandedElement === element ? null : element"></tr>
+                                    <tr mat-row *matRowDef="let row; columns: ['expandedDetail']"
+                                        class="expand-detail-row"></tr>
+                                    </table>
+                                </div>
+                                <mat-card class="mat-elevation-z0 card retention-card metadata-card-margin"
+                                    style="margin: 1px" *ngIf="!userWithAccessDataLoading && !dataSource.data.length">
+                                    <mat-card-subtitle class="retention-card-header">
+                                        No users available</mat-card-subtitle>
+                                </mat-card>
+                                <mat-card class="mat-elevation-z0 card retention-card metadata-card-margin"
+                                    style="margin: 1px" *ngIf="userWithAccessDataLoading">
+                                    <mat-card-subtitle class="retention-card-header">
+                                        Loading...</mat-card-subtitle>
+                                </mat-card>
+                            </mat-card-content>
+                        </mat-card>
+                    </div>
+                </mat-tab>
+            </mat-tab-group>
+        </mat-card>
+    </div>
+    <div *ngIf="!selectedDatasource" fxFlex="auto" fxFlex.xs="100%" fxFlex.gt-xs="100%" fxFlex.sm="100%"
+        fxFlex.gt-sm="69%" style="margin: auto">
+        <div fxLayout="row wrap" fxLayoutAlign="center center" class="choose-a-data-asset">
+            Choose a Data Asset to view more
+        </div>
+    </div>
+</div>

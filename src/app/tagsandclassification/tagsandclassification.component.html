@@ -1,0 +1,178 @@
+<div fxLayout="row" fxLayoutAlign="space-between none" class="screen-title">
+    <div fxLayout="column" fxLayoutAlign="center stretch">
+        <div class="screen-nav-item" data-tagssubheader="sub-header">CUSTOMIZE</div>
+        <div class="screen-header" data-tagsheader="header">Tags & Classification</div>
+    </div>
+</div>
+
+<div class="content-body">
+    <div fxLayout="row wrap" fxLayoutGap="25px grid">
+        <div fxFlex="30%" fxFlex.xs="100%" fxFlex.gt-xs="100%" fxFlex.sm="100%" fxFlex.gt-sm="50%" fxFlex.md="50%"
+            fxFlex.gt-md="33.3%" fxFlex.lg="33.3%" fxFlex.gt-lg="25">
+            <mat-card class="card">
+                <span class="card-header input-field-alignment-tags-and-classification">
+                    <div class="header-title text-overflow" data-heading="heading">
+                        Tags
+                    </div>
+                    <form class="header-content" [formGroup]="dataForm" (ngSubmit)="createTag()" novalidate>
+                        <div fxLayout="row wrap">
+                            <div fxFlex="auto" fxFlex.xs="100%" fxFlex.gt-xs="100%" fxFlex.sm="100%" fxFlex.gt-sm="100%"
+                                fxFlex.md="66.7%" fxFlex.gt-md="66.7%" fxFlex.lg="75%" fxFlex.gt-lg="75%">
+                                <mat-form-field appearance="outline" class="mat-input-field">
+                                    <mat-label>Create Tag</mat-label>
+                                    <input #tagName matInput type="text" formControlName="tag" maxlength="50"
+                                        autocomplete="off" data-createtag="create-tag" />
+                                    <mat-hint align="end" *ngIf="tagName.value.length"> {{ tagName.value.length }} / 50
+                                    </mat-hint>
+                                </mat-form-field>
+                            </div>
+                            <div fxFlex="auto" fxFlex.xs="100%" fxFlex.gt-xs="100%" fxFlex.sm="100%" fxFlex.gt-sm="100%"
+                                fxFlex.md="33.3%" fxFlex.gt-md="33.3%" fxFlex.lg="25%" fxFlex.gt-lg="25%">
+                                <button mat-button matSuffix mat-button aria-label="search" class="mat-add-button"
+                                    color="primary">
+                                    <mat-icon matPrefix class="mat-add-icon">add</mat-icon>
+                                    CREATE
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </span>
+
+                <span class="card-content">
+                    <div class="table-parent-layout tags" fxLayout="row wrap">
+                        <div fxFlex="auto">
+                            <table mat-table matSort class="mat-elevation-z0 data-available-section"
+                                [dataSource]="totalTags.table.datasource" data-tabletags="tags-table">
+                                <ng-container matColumnDef="name">
+                                    <th class="table-header-font" mat-header-cell *matHeaderCellDef mat-sort-header
+                                        sortActionDescription="Sort by name">
+                                        Tag Name
+                                    </th>
+                                    <td mat-cell *matCellDef="let element">
+                                        <div [matTooltip]="element?.name" matTooltipClass="mat-tooltip-customize">
+                                            <ng-container>
+                                                <div class="text-overflow">
+                                                    {{element?.name}}
+                                                </div>
+                                            </ng-container>
+                                        </div>
+                                    </td>
+                                </ng-container>
+                                <ng-container matColumnDef="type" stickyEnd>
+                                    <th class="table-header-font header-align-left" mat-header-cell *matHeaderCellDef>
+                                        Type
+                                    </th>
+                                    <td mat-cell *matCellDef="let element" class="row-data-align-left">
+                                        {{ element.type }}
+                                    </td>
+                                </ng-container>
+                                <tr mat-header-row *matHeaderRowDef="TagColumns; sticky: true"></tr>
+                                <tr mat-row *matRowDef="let row; columns: TagColumns"></tr>
+                            </table>
+                        </div>
+                    </div>
+                </span>
+            </mat-card>
+
+        </div>
+        <div fxFlex="70%" fxFlex.xs="100%" fxFlex.gt-xs="100%" fxFlex.sm="100%" fxFlex.gt-sm="50%" fxFlex.md="50%"
+            fxFlex.gt-md="66.7%" fxFlex.lg="66.7%" fxFlex.gt-lg="25">
+            <mat-card class="card">
+                <span class="card-header input-field-alignment-tags-and-classification">
+                    <div class="header-title text-overflow" data-classheading="class-heading">
+                        Classification
+                    </div>
+                    <form class="header-content" [formGroup]="dataForm" (ngSubmit)="createCombination()" novalidate>
+                        <div fxLayout="row wrap">
+                            <div fxFlex="auto" fxFlex.xs="100%" fxFlex.gt-xs="100%" fxFlex.sm="100%" fxFlex.gt-sm="100%"
+                                fxFlex.md="40%" fxFlex.gt-md="30%" fxFlex.lg="30%" fxFlex.gt-lg="30%">
+                                <mat-form-field appearance="outline" class="mat-input-field">
+                                    <mat-label>Category</mat-label>
+                                    <mat-select [(ngModel)]="selectedClassification" formControlName="classification"
+                                        panelClass="category-dropdown-style" data-select="select-category">
+                                        <mat-option *ngFor="let classification of classificationDropdown"
+                                            [value]="classification.value">
+                                            {{ classification.viewValue }}
+                                        </mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                            </div>
+                            <div fxFlex="auto" fxFlex.xs="100%" fxFlex.gt-xs="100%" fxFlex.sm="100%" fxFlex.gt-sm="100%"
+                                fxFlex.md="60%" fxFlex.gt-md="50%" fxFlex.lg="50%" fxFlex.gt-lg="50%">
+
+                                <mat-form-field appearance="outline" class="mat-input-field">
+                                    <mat-label>Select One or More Tags </mat-label>
+                                    <mat-select multiple (valueChange)="onItemSelect($event)"
+                                        formControlName="classificationTags" panelClass="tags-dropdown-style">
+                                        <mat-option *ngFor="let tag of filteredTags" [value]="tag">
+                                            {{ tag.name }}
+                                        </mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                            </div>
+                            <div fxFlex="auto" fxFlex.xs="100%" fxFlex.gt-xs="100%" fxFlex.sm="100%" fxFlex.gt-sm="100%"
+                                fxFlex.md="100%" fxFlex.gt-md="20%" fxFlex.lg="20%" fxFlex.gt-lg="20%">
+                                <button matSuffix mat-button aria-label="search" class="mat-add-button"
+                                    [disabled]="this.selectedClassification == 'none'" color="primary">
+                                    <mat-icon matPrefix class="mat-add-icon">add</mat-icon>ADD TO CATEGORY
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </span>
+                <span class="card-content">
+                    <div class="table-parent-layout classification" fxLayout="row wrap">
+                        <div fxFlex="auto">
+                            <table class="mat-elevation-z0 data-available-section" *ngIf="selectedCombination.length"
+                                [dataSource]="selectedCombination[0].combination" mat-table data-cy="classificaion-table">
+                                <ng-container matColumnDef="name">
+                                    <th class="table-header-font" mat-header-cell *matHeaderCellDef>
+                                        Tags in category:
+                                        <span
+                                            [ngClass]="{ 'classification-color': selectedCombination[0]?.name !== 'none' }">{{
+                                            selectedCombination[0]?.name
+                                            }}</span>
+                                    </th>
+                                    <td style="padding-top: 0px; padding-bottom: 0px;" mat-cell
+                                        *matCellDef="let element">
+                                        <mat-chip-list>
+                                            <ng-container *ngFor="let item of element.tags; index as i">
+                                                <mat-chip class="tag-chip-small chip-primary" *ngIf="i<5">{{ item.name
+                                                    }}
+                                                </mat-chip>
+                                            </ng-container>
+                                            <span *ngIf=" element.tags.length > 5">
+                                                <span (click)="tooltip.toggle()" #tooltip="matTooltip"
+                                                    [matTooltip]="tagsTooltip(element.tags)" matTooltipPosition="below"
+                                                    matTooltipClass="mat-tooltip">
+                                                    ...
+                                                </span>
+                                            </span>
+                                        </mat-chip-list>
+                                    </td>
+                                </ng-container>
+                                <ng-container matColumnDef="action" stickyEnd>
+                                    <th class="table-header-font header-align-center" mat-header-cell *matHeaderCellDef>
+                                        Action
+                                    </th>
+                                    <td style="padding-top: 0px; padding-bottom: 0px;" mat-cell
+                                        *matCellDef="let element" class="row-data-align-center">
+                                        <button mat-icon-button color="warn"
+                                            *ngIf="this.selectedClassification != 'none'" (click)="openDialog(element)">
+                                            <mat-icon color="warn">delete_outline</mat-icon>
+                                        </button>
+                                        <button mat-icon-button *ngIf="this.selectedClassification == 'none'" disabled>
+                                            <mat-icon>delete_outline</mat-icon>
+                                        </button>
+                                    </td>
+                                </ng-container>
+                                <tr mat-header-row *matHeaderRowDef="ClassificationColumns; sticky: true"></tr>
+                                <tr mat-row *matRowDef="let row; columns: ClassificationColumns"></tr>
+                            </table>
+                        </div>
+                    </div>
+                </span>
+            </mat-card>
+        </div>
+    </div>
+</div>

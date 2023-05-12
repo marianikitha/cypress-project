@@ -1,0 +1,237 @@
+@import '../../variables.scss';
+
+.screen-title {
+    margin-bottom: 20px;
+}
+
+.classification-color {
+    color: $onedpo-delete;
+}
+
+.action-button {
+    color: $primary;
+    font-size: 13px;
+    line-height: 33px;
+    width: 100%;
+    padding-left: 0;
+}
+
+::ng-deep .input-field-alignment-tags-and-classification {
+    .mat-form-field-flex>.mat-form-field-infix {
+        padding: 0.4em 0px !important;
+    }
+
+    .mat-form-field-label-wrapper {
+        top: -1.5em;
+    }
+
+    .mat-form-field-appearance-outline.mat-form-field-can-float.mat-form-field-should-float .mat-form-field-label {
+        transform: translateY(-1.1em) scale(0.75);
+        width: 133.33333%;
+    }
+
+    .mat-form-field-appearance-outline .mat-form-field-wrapper {
+        margin: 0px 5px 0px !important;
+    }
+
+    .mat-tooltip {
+        font-size: 15px !important;
+        word-break: break-all !important;
+    }
+
+    .tag-chip-small {
+        min-height: 20px !important;
+        font-size: 11px !important;
+    }
+
+    .mat-chip-list-wrapper .mat-standard-chip {
+        margin: 0px;
+    }
+
+    .mat-standard-chip .mat-chip-remove .mat-icon {
+        width: 15px;
+        height: 15px;
+        font-size: 15px;
+        padding-top: 2px;
+    }
+}
+
+::ng-deep .mat-tooltip-customize {
+    font-size: 15px;
+    word-break: break-all !important;
+}
+
+.content-body {
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 0 10px 0 0;
+    max-height: calc(100vh - 124px);
+    height: calc(100vh - 124px);
+
+    .text-overflow {
+        white-space: nowrap;
+        max-width: 220px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .card {
+        background: $button-primary-text;
+        border: 0.7px solid $onedpo-light-blue;
+        box-sizing: border-box;
+        border-radius: 12px;
+        box-shadow: none;
+        height: calc(100vh - 154px);
+
+        .card-header {
+            .header-title {
+                font-family: Roboto;
+                font-style: normal;
+                font-weight: 500;
+                font-size: 17px;
+                line-height: 24px;
+                color: $onedpo-grey;
+                padding-top: 5px;
+                padding-bottom: 5px;
+                word-wrap: break-word;
+                overflow-wrap: break-word;
+            }
+
+            .header-content {
+                .mat-input-field {
+                    font-size: 14px;
+                    width: 100%;
+
+                    .tags-size {
+                        font-size: 12px;
+                    }
+                }
+
+                .mat-add-button {
+                    border: none;
+                    background-color: white;
+                    color: $primary;
+                    font-size: 13px;
+                    line-height: 33px;
+                    width: 100%;
+                    padding-left: 0;
+
+                   
+                }
+            }
+        }
+        
+        .card-content {
+            max-height: calc(100vh - 250px);
+            overflow: auto;
+
+            .table-parent-layout {
+                height: calc(100vh - 292px);
+                overflow: auto;
+                margin-top: 15px;
+                border: 1px solid $table-footer-light-grey;
+                border-radius: 4px;
+
+                .data-available-section {
+                    width: calc(100% - 16px);
+                    max-height: calc(100vh - 119px);
+                    overflow: auto;
+                    width: 100%;
+
+                    .mat-row {
+                        height: auto;
+                    }
+
+                    .mat-cell {
+                        padding-top: 10px;
+                        padding-bottom: 10px;
+                    }
+
+                    tr.mat-header-row {
+                        height: 45px;
+                    }
+
+                    .table-header-font {
+                        font-weight: 500;
+                        font-size: 14px;
+                        color: $onedpo-grey;
+                        text-align: initial;
+                    }
+
+                    .header-align-center {
+                        text-align: center;
+                        width: 20%;
+                    }
+
+                    .header-align-left {
+                        text-align: left;
+                        width: 20%;
+                    }
+
+                    .row-data-align-center {
+                        text-align: center;
+                    }
+
+                    .row-data-align-left {
+                        text-align: left;
+                    }
+
+                    .mat-row:nth-child(odd) {
+                        background: $sample-data-odd-grey;
+                    }
+
+                    .tag-chip-small {
+                        min-height: 20px !important;
+                        font-size: 11px !important;
+                    }
+
+                    .mat-icon-button {
+                        height: 37px;
+                    }
+                }
+            }
+
+            @media all and (max-width: 960px) {
+                .tags {
+                    height: calc(100vh - 322px);
+                }
+
+                .classification {
+                    height: calc(100vh - 378px);
+                }
+            }
+
+            @media all and (min-width: 961px) and (max-width: 1250px) {
+                .classification {
+                    height: calc(100vh - 322px);
+                }
+            }
+        }
+    }
+}
+
+::ng-deep .tooltip-truncation {
+    word-break: break-all !important;
+    white-space: normal !important;
+}
+
+::ng-deep .cdk-overlay-container .cdk-overlay-pane .tags-dropdown-style {
+    position: absolute;
+    top: 35px;
+    left: 31px;
+    min-width: calc(100% + 20px) !important;
+}
+
+::ng-deep .cdk-overlay-container .cdk-overlay-pane .category-dropdown-style {
+    position: absolute;
+    top: 35px;
+    left: 7px;
+    min-width: calc(100% + 20px) !important;
+}
+
+.mat-add-icon {
+    // margin-top: 15px;
+    font-size: 22px;
+    // padding-top: 10px;
+    // background-color: aqua;
+}

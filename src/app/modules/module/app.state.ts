@@ -1,0 +1,50 @@
+// import { RouterReducerState } from '@ngrx/router-store';
+// import { CustomizeDatasourceState } from './states/customize-datasource.state';
+// import { AuthState } from './states/auth.state';
+// import { ActionsDataCatalogState } from './states/actions-data-catalog.state';
+// import { DashboardState } from './states/dashboard.state';
+import { ActionsDataCatalogState } from './states/actions-data-catalog.state';
+import { AssessmentDataState } from './states/assessment-data.state';
+import { CustomizeTagsClassificationState } from './states/customize-tags.state';
+import { ReportsDataState } from './states/reports-data.state';
+// import { SharedState } from './states/shared.state';
+// import { CustomizePurposeState } from './states/customize-purpose.state';
+// import { CustomizeTagsClassificationState } from './states/customize-tags.state';
+// import { GlobalSpinnerState } from './states/global-spinner.state';
+// import { ComplianceRopaState } from './states/compliance-ropa.state';
+// import { ComplianceDpiaState } from './states/compliance-dpia.state';
+// import { ExpectedDurationState } from './states/expected-duration.state';
+// import { SettingsNotificationState } from './states/settings-notification.state';
+// import { SettingsSchedulerState } from './states/settings-scheduler.state';
+// import { BatchDataState } from './states/batch.state';
+// import { ActivityHistoryState } from './states/activity-history.state';
+// import { ReportsDataState } from './states/reports-data.state';
+// import { datasourcesState } from './states/datasource.state';
+// import { chooseDatasourcesState } from './states/choose-datasource.state';
+
+export interface AppState {
+    
+    // router: RouterReducerState;
+    // auth: AuthState;
+    // chooseDatasources: chooseDatasourcesState;
+    // customizeDatasource: CustomizeDatasourceState;
+    // actionsDataCatalog: ActionsDataCatalogState;
+    // dashboard: DashboardState;
+    reports: ReportsDataState;
+    assessment: AssessmentDataState;
+    customizeTagsClassification: CustomizeTagsClassificationState;
+    actionsDataCatalog: ActionsDataCatalogState;
+    // ropa: ComplianceRopaState;
+    // dpia: ComplianceDpiaState;
+    // shared: SharedState;
+    // customizePurpose: CustomizePurposeState;
+    // customizeTagsClassification: CustomizeTagsClassificationState;
+    // globalSpinner: GlobalSpinnerState;
+    // expectedDuration: ExpectedDurationState;
+    // settingsNotification: SettingsNotificationState;
+    // settingsScheduler: SettingsSchedulerState;
+    // reports: ReportsDataState;
+    // batchDataState: BatchDataState;
+    // activityHistory: ActivityHistoryState;
+    // datasource : datasourcesState;
+}
